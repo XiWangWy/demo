@@ -31,6 +31,23 @@
   border-radius: 25px;
 }
 
+.InputStyle{
+  width: 100px;
+  margin: 10px;
+}
+
+.SpInputStyle{
+  width: 100px;
+  margin: 10px 10px 10px 60px;
+}
+
+.AddButton{
+  width: 150px;
+  margin: 10px;
+  /*background-color: cornflowerblue;*/
+}
+
+
 
 .logo {
   width: 120px;

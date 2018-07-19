@@ -3,7 +3,7 @@
  */
 import fetch from  'isomorphic-fetch';
 class Fetch {
-    static  baseUrl = "http://127.0.0.1:3001";
+    static  baseUrl = "http://127.0.0.1:8888";
     static fetchPost(url,jsonBody,callback){
 
        //XMLHttpRequest请求

@@ -1,100 +1,257 @@
 import React, { Component } from 'react';
+import Welcome from './Welcome';
+import Four from './Four';
 import './App.css';
-import history from './history';
-import { Button,Layout,Menu, Icon,Breadcrumb} from 'antd';
-const {Header,Footer,Sider,Content} = Layout
-const { SubMenu } = Menu;
-
-
+import Fetch from './Fetch';
+// import history from './history';
+import { Button,Layout,Menu, Icon,Breadcrumb,Input} from 'antd';
+// const {Header,Footer,Sider,Content} = Layout
+// const { SubMenu } = Menu;
+const Search = Input.Search;
 
 class App extends Component {
-    onClick(e){
-        console.log(history)
-      history.push('/login');
-      //   history.replace('/login');
+    relationship = new Array("且","或","伴随");
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            diag:"",
+            count:0,
+            data:{},
+            symbols:{}
+        }
+
     }
 
-    // render(){
-    //     return <div>
-    //         <h2>Home</h2>
-    //     </div>
+
+    componentDidMount() {
+        window.addEventListener('keydown', this.handleKeyDown);
+    }
+
+    isEmptyObject(obj){
+    if (JSON.stringify(obj) == '{}' || obj == undefined) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+    handleKeyDown = (e) => {
+        console.log(e.keyCode);
+        switch (e.keyCode){
+            case 13:
+                console.log("你按了 回车键！！")
+                this.newParentLine("症状");
+                break;
+            case 9:
+                console.log("你按了 Tab！！")
+                break;
+            case 37:
+                console.log("你按了 Left！！")
+                break;
+
+        }
+    }
+
+
+    newParentLine(type){
+        var index = Object.keys(this.state.data).length;
+        console.log(this.state)
+
+        var childIndex;
+
+        if(this.isEmptyObject(this.state.data[index])){
+            this.state.data[index] = {};
+        }
+
+        if(this.isEmptyObject(this.state.symbols[index])){
+            this.state.symbols[index] = {};
+        }
+
+        childIndex = Object.keys(this.state.data[index]).length;
+
+        var tmpData = {name:"",type:type,degree:"",decorate:"",value:"",unit:"",symbol:""};
+
+        this.state.data[index][childIndex] = tmpData;
+        this.state.symbols[index][childIndex] = this.relationship[0];
+        this.setState({
+            diag:this.state.diag,
+            count:1,
+            data:this.state.data,
+            symbols:this.state.symbols
+        })
+        console.log(this.state)
+    }
+
+
+
+    // onClick(e){
+    //     console.log(history)
+    //     history.push('/login');
+    //   //   history.replace('/login');
     // }
 
 
+    press(input){
+        console.log(input.currentTarget.value);
+        // this.state.data.push({aa:"hahh",bb:"ddd",cc:"wwww"})
+        // this.setState({
+        //     count:1,
+        //     data:this.state.data
+        // })
+    }
+
+    onChange(event){
+        console.log(event.target.value)
+        this.state.diag = event.target.value;
+    }
+
+
+    handleChange(input) {
+        // console.log(input);
+        console.log("APP.js -->   ChangeA   " + "index:  " + input.childIndex + " key:  " + input.key + " value:  " + input.value)
+        var childIndex = input.childIndex;
+        var parentIndex = input.parentIndex;
+        var value = input.value;
+        var key = input.key;
+
+        var objc = this.state.data[parentIndex][childIndex];
+        objc[key] = value;
+        console.log(this.state.data[parentIndex])
+    }
+
+    newChildLine(childIndex,parentIndex,value,type){
+        //需要新增一个子行
+        if(type == "新增症状"){
+            type = "症状";
+        }
+        if(value == "新增化验"){
+            type = "化验";
+        }
+
+
+            childIndex++;
+            var index = parentIndex;
+
+            var ob = this.state.data[parentIndex][childIndex];
+            var tmpData = {name:"",type:type,degree:"",decorate:"",value:"",unit:"",symbol:""};
+            if(this.isEmptyObject(ob)){
+                this.state.data[index][childIndex] = tmpData;
+                this.state.symbols[index][childIndex] = this.relationship[0];
+            }else {
+                var newOBj = {};
+                for ( var childKey in this.state.data[index]){
+                    childKey = parseInt(childKey)
+                    if (childKey < childIndex){
+                        newOBj[childKey] = this.state.data[index][childKey]
+                    }else {
+                        newOBj[childKey+1] = this.state.data[index][childKey]
+                    }
+                }
+                newOBj[childIndex] = tmpData;
+
+
+                this.state.data[index] = newOBj;
+            }
+
+
+
+            this.setState({
+                diag:this.state.diag,
+                count:1,
+                data:this.state.data,
+                symbols:this.state.symbols
+            })
+            console.log(this.state)
+        console.log(this.state.symbols)
+    }
+
+    handleChangeType(select){
+        var childIndex = select.childIndex;
+        var parentIndex = select.parentIndex;
+        var value = select.type;
+
+        this.newChildLine(parseInt(childIndex),parseInt(parentIndex),value,select.type);
+    }
+
+    handleSelectChange(select){
+        console.log("APP.js -->   Select   " + "index:  " + select.index + " value:  " + select.value)
+        var childIndex = select.childIndex;
+        var parentIndex = select.parentIndex;
+        var value = select.value;
+
+        this.state.symbols[parentIndex][childIndex] = value;
+
+        console.log(this.state.symbols)
+
+    }
+
+    save(){
+        console.log(this.state)
+    }
+
+    onSearch(text){
+        console.log("点击：===》" + text);
+        var param = {
+          word:text
+        };
+        Fetch.fetchPost('/prompt',param,(obj) => {
+            console.log("收到返回结果：===》" + obj['type']);
+            var type = obj['type'];
+            if(type == '症状' || '化验'){
+                this.newParentLine(type);
+            }
+        })
+    }
+
+
   render() {
-    return (
-      <div >
-        <Button className='center' type="primary" onClick={()=>this.onClick(this)}>Primary</Button>Button
-        {/*<Button>Default</Button>*/}
-        {/*<Button type="dashed">Dashed</Button>*/}
-        {/*<Button type="danger">Danger</Button>*/}
-          <Layout>
-              <Header className="header">
-                  <img className="logo" src={require('./timg2.jpeg')} alt="">
-                  </img>
-                  <Menu
-                      theme="dark"
-                      mode="horizontal"
-                      defaultSelectedKeys={['2']}
-                      style={{ lineHeight: '64px' }}
-                  >
-                      <Menu.Item key="1">nav 1</Menu.Item>
-                      <Menu.Item key="2">nav 2</Menu.Item>
-                      <Menu.Item key="3">nav 3</Menu.Item>
-                  </Menu>
-              </Header>
 
-              <Content className="content">
-                  <Breadcrumb style={{ margin: '16px 0' }}>
-                      <Breadcrumb.Item>Home</Breadcrumb.Item>
-                      <Breadcrumb.Item>List</Breadcrumb.Item>
-                      <Breadcrumb.Item>App</Breadcrumb.Item>
-                  </Breadcrumb>
+        if(this.state.count == 0){
+            return (
+                <div>
+                    <div>
+                        <Input className='InputStyle' placeholder = '诊断' onChange={this.onChange.bind(this)}/>
+                        <Button onClick={this.save.bind(this)}>保存</Button>
+                    </div>
+                        <Search className='InputStyle' enterButton onSearch={this.onSearch.bind(this)}>
 
-              </Content>
-              <Layout style={{ padding: '24px 0', background: 'cornflowerblue' }} >
+                        </Search>
+                </div>
+                );
+        }else {
+            let d = []
+            d.push(
+                <div>
+                    <Input className='InputStyle' placeholder = '诊断' onPressEnter = {this.press.bind(this)} defaultValue={this.state.diag}/>
+                    <Button onClick={this.save.bind(this)}>保存</Button>
+                </div>
+            );
 
-                  <Sider  className="sider">
-                      <Menu
-                          mode="inline"
-                          defaultSelectedKeys={['1']}
-                          defaultOpenKeys={['sub1']}
-                          style={{ height: '100%' }}
-                          theme = "dark"
-                      >
-                          <SubMenu key="sub1" title={<span><Icon type="user" />subnav 1</span>}>
-                              <Menu.Item key="1">option1</Menu.Item>
-                              <Menu.Item key="2">option2</Menu.Item>
-                              <Menu.Item key="3">option3</Menu.Item>
-                              <Menu.Item key="4">option4</Menu.Item>
-                          </SubMenu>
-                          <SubMenu key="sub2" title={<span><Icon type="laptop" />subnav 2</span>}>
-                              <Menu.Item key="5">option5</Menu.Item>
-                              <Menu.Item key="6">option6</Menu.Item>
-                              <Menu.Item key="7">option7</Menu.Item>
-                              <Menu.Item key="8">option8</Menu.Item>
-                          </SubMenu>
-                          <SubMenu key="sub3" title={<span><Icon type="notification" />subnav 3</span>}>
-                              <Menu.Item key="9" >option9</Menu.Item>
-                              <Menu.Item key="10">option10</Menu.Item>
-                              <Menu.Item key="11">option11</Menu.Item>
-                              <Menu.Item key="12">option12</Menu.Item>
-                          </SubMenu>
-                      </Menu>
+            for (var patentKey in this.state.data){
+                console.log("index==>"+ patentKey);
+                var obje = this.state.data[patentKey];
+
+                var count = 0;
+                for (var childKey in obje){
+                    var childItem = obje[childKey];
+                    var type = obje[childKey]["type"];
+                    if (type == "化验"){
+                        d.push(<Four indexParent = {patentKey}  indexChild = {childKey} childCount = {count} item={childItem} handleChangeType = {this.handleChangeType.bind(this)} handleChange={this.handleChange.bind(this)}  handleSelectChange={this.handleSelectChange.bind(this)}/>)
+                    }else {
+                        d.push(<Welcome indexParent = {patentKey} indexChild = {childKey} childCount = {count} item={childItem} handleChangeType = {this.handleChangeType.bind(this)} handleChange={this.handleChange.bind(this)}  handleSelectChange={this.handleSelectChange.bind(this)}/>)
+                    }
+                    count++;
+                }
 
 
-                  </Sider>
-                  <Content style={{ padding: '0 24px', minHeight: 280 }}>
-                      Content  a aa a a a a a a
-                  </Content>
 
+            }
 
-              </Layout>
-              <Footer className="footer">Ant Design ©2016 Created by Ant UED</Footer>
-          </Layout>
-          {this.props.children}
-      </div>
-    );
+            return d;
+
+        }
+
   }
 
 }
