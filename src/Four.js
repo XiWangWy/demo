@@ -88,7 +88,7 @@ class Four extends Component {
                             {/*<Option value="新增症状">新增症状</Option>*/}
                             {/*<Option value="新增化验">新增化验</Option>*/}
                         {/*</Select>*/}
-                        <Button style={{ width: 120 ,margin:'10px 10px 10px 50px'}} name = "type" type="primary" onClick={this.handleSelectChangeTypeItem.bind(this)}>添加子项</Button>
+                        <Button style={{ width: 120 ,margin:'10px 10px 10px 50px'}} name = "type" type="primary" onClick={this.handleSelectChangeTypeItem.bind(this)}>添加关联项</Button>
                     </div>
                 )
             }else {
@@ -108,7 +108,7 @@ class Four extends Component {
                             {/*<Option value="新增症状">新增症状</Option>*/}
                             {/*<Option value="新增化验">新增化验</Option>*/}
                         {/*</Select>*/}
-                        <Button style={{ width: 120 ,margin:'10px 10px 10px 50px'}} name = "type" type="primary" onClick={this.handleSelectChangeTypeItem.bind(this)}>添加子项</Button>
+                        <Button style={{ width: 120 ,margin:'10px 10px 10px 50px'}} name = "type" type="primary" onClick={this.handleSelectChangeTypeItem.bind(this)}>添加关联项</Button>
                     </div>
                 )
             }

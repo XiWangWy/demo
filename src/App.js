@@ -6,7 +6,6 @@ import Fetch from './Fetch';
 import Tools from "./Tools"
 // import history from './history';
 import { Button,Input,message} from 'antd';
-import ReactLabel from 'react-label';
 const Search = Input.Search;
 
 class App extends Component {
