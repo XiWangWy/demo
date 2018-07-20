@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import Login from './routes/Login';
+import Add from './Add';
 // import MyTest from './routes/Test';
 
 import {
@@ -18,10 +19,10 @@ ReactDOM.render(
     <Router history={history}>
         <div>
             <Route exact path="/" component={App} />
-            <Route path='/login' component={Login} >
+            <Route path='/login' component={Login} />
+            <Route path='/add' component={Add} />
 
 
-            </Route>
 
 
 
