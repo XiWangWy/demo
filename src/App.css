@@ -36,6 +36,13 @@
   margin: 10px;
 }
 
+.Label{
+  width: 100px;
+  margin: 10px;
+  background-color: cornflowerblue;
+  color: black;
+}
+
 .SpInputStyle{
   width: 100px;
   margin: 10px 10px 10px 60px;
@@ -47,6 +54,11 @@
   /*background-color: cornflowerblue;*/
 }
 
+.ProjectId{
+  width: 300px;
+  margin: 10px;
+  /*background-color: #40a9ff;*/
+}
 
 
 .logo {

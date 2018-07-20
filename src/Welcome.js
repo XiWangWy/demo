@@ -3,11 +3,11 @@
  */
 import React, { Component } from 'react';
 import './App.css';
-import history from './history';
-import { Button,Layout,Menu, Icon,Breadcrumb,Input,Select} from 'antd';
-const {Header,Footer,Sider,Content} = Layout
-const { SubMenu } = Menu;
+// import history from './history';
+import { Button,Input,Select} from 'antd';
+import Tools from './Tools';
 const Option = Select.Option;
+const Search = Input.Search;
 
 class Four extends Component {
 
@@ -48,44 +48,67 @@ class Four extends Component {
         this.props.handleChangeType(item);
     }
 
+    onSearch(value){
+        var item = {
+            value:value,
+            childIndex:this.props.indexChild,
+            parentIndex:this.props.indexParent
+        }
+        this.props.onSearch(item);
+    }
+
 
     render(){
-        if (this.props.indexChild == 0){
-            return (
+        if (Tools.isEmptyObject(this.props.item)){
+            //为空 出现一个搜索框
+            return(
                 <div>
-                    <Button className='InputStyle' style={{width:"20px"}}>{parseInt(this.props.indexParent) + 1}</Button>
-                    <Input  className='InputStyle' defaultValue={this.props.item.aa} name = "name" onChange={this.handleChangeItem.bind(this)}/>
-                    <Input  className='InputStyle' defaultValue={this.props.item.bb} name = "degree" onChange={this.handleChangeItem.bind(this)}/>
-                    <Input  className='InputStyle' defaultValue={this.props.item.cc} name = "decorate" onChange={this.handleChangeItem.bind(this)}/>
-                    <Select defaultValue="且" style={{ width: 120 }} name = "relationShip" onSelect={this.handleSelectChangeItem.bind(this)}>
-                        <Option value="且">且</Option>
-                        <Option value="或">或</Option>
-                        <Option value="伴随">伴随</Option>
-                    </Select>
-                    <Select defaultValue="新增症状" style={{ width: 120 ,margin:'10px 10px 10px 50px'}} name = "type" onSelect={this.handleSelectChangeTypeItem.bind(this)}>
-                        <Option value="新增症状">新增症状</Option>
-                        <Option value="新增化验">新增化验</Option>
-                    </Select>
+                    <Search className='InputStyle' enterButton onSearch = {this.onSearch.bind(this)}>
+
+                    </Search>
                 </div>
             )
         }else {
-            return (
-                <div>
-                    <Input  className='SpInputStyle' defaultValue={this.props.item.aa} name = "name" onChange={this.handleChangeItem.bind(this)}/>
-                    <Input  className='InputStyle' defaultValue={this.props.item.bb} name = "degree" onChange={this.handleChangeItem.bind(this)}/>
-                    <Input  className='InputStyle' defaultValue={this.props.item.cc} name = "decorate" onChange={this.handleChangeItem.bind(this)}/>
-                    <Select defaultValue="且" style={{ width: 120 }} name = "relationShip" onSelect={this.handleSelectChangeItem.bind(this)}>
-                        <Option value="且">且</Option>
-                        <Option value="或">或</Option>
-                        <Option value="伴随">伴随</Option>
-                    </Select>
-                    <Select defaultValue="新增症状" style={{ width: 120 ,margin:'10px 10px 10px 50px'}} name = "type" onSelect={this.handleSelectChangeTypeItem.bind(this)}>
-                        <Option value="新增症状">新增症状</Option>
-                        <Option value="新增化验">新增化验</Option>
-                    </Select>
-                </div>
-            )
+            if (this.props.indexChild == 0){
+                return (
+                    <div>
+                        <Button className='InputStyle' style={{width:"20px"}}>{parseInt(this.props.indexParent) + 1}</Button>
+                        <Input  className='InputStyle' defaultValue={this.props.item.name} name = "name" onChange={this.handleChangeItem.bind(this)}/>
+                        <Input  className='InputStyle' defaultValue={this.props.item.degree} name = "degree" onChange={this.handleChangeItem.bind(this)}/>
+                        <Input  className='InputStyle' defaultValue={this.props.item.decorate} name = "decorate" onChange={this.handleChangeItem.bind(this)}/>
+                        <Select defaultValue="且" style={{ width: 120 }} name = "relationShip" onSelect={this.handleSelectChangeItem.bind(this)}>
+                            <Option value="且">且</Option>
+                            <Option value="或">或</Option>
+                            <Option value="伴随">伴随</Option>
+                        </Select>
+                        {/*<Select defaultValue="新增症状" style={{ width: 120 ,margin:'10px 10px 10px 50px'}} name = "type" onSelect={this.handleSelectChangeTypeItem.bind(this)}>*/}
+                            {/*<Option value="新增症状">新增症状</Option>*/}
+                            {/*<Option value="新增化验">新增化验</Option>*/}
+                        {/*</Select>*/}
+                        <Button style={{ width: 120 ,margin:'10px 10px 10px 50px'}} name = "type" type="primary" onClick={this.handleSelectChangeTypeItem.bind(this)}>添加子项</Button>
+                    </div>
+                )
+            }else {
+                return (
+                    <div>
+                        <Input  className='SpInputStyle' defaultValue={this.props.item.name} name = "name" onChange={this.handleChangeItem.bind(this)}/>
+                        <Input  className='InputStyle' defaultValue={this.props.item.degree} name = "degree" onChange={this.handleChangeItem.bind(this)}/>
+                        <Input  className='InputStyle' defaultValue={this.props.item.decorate} name = "decorate" onChange={this.handleChangeItem.bind(this)}/>
+                        <Select defaultValue="且" style={{ width: 120 }} name = "relationShip" onSelect={this.handleSelectChangeItem.bind(this)}>
+                            <Option value="且">且</Option>
+                            <Option value="或">或</Option>
+                            <Option value="伴随">伴随</Option>
+                        </Select>
+                        {/*<Select defaultValue="新增症状" style={{ width: 120 ,margin:'10px 10px 10px 50px'}} name = "type" onSelect={this.handleSelectChangeTypeItem.bind(this)}>*/}
+                            {/*<Option value="新增症状">新增症状</Option>*/}
+                            {/*<Option value="新增化验">新增化验</Option>*/}
+                        {/*</Select>*/}
+                        <Button style={{ width: 120 ,margin:'10px 10px 10px 50px'}} name = "type" type="primary" onClick={this.handleSelectChangeTypeItem.bind(this)}>添加子项</Button>
+                    </div>
+                )
+            }
         }
+
 
     }
 
