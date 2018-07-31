@@ -23,6 +23,23 @@ class Tools {
         return (this.S4()+this.S4()+this.S4()+this.S4()+this.S4()+this.S4()+this.S4()+this.S4());
     }
 
+
+    static undefineToNull(obj){
+        if (obj === 'undefine'){
+            return null;
+        }
+    }
+
+// ArrayBuffer转为字符串，参数为ArrayBuffer对象
+   static ab2str(buf) {
+    return String.fromCharCode.apply(null, new Uint16Array(buf));
+    }
+
+    // static isLong(obj){
+    //     return typeof obj == 'long' || typeof obj == 'int';
+    //     // return !(typeof  obj === 'String');
+    // }
+
 }
 
 

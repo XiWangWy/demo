@@ -5,7 +5,7 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import Login from './routes/Login';
 import Add from './Add';
-// import MyTest from './routes/Test';
+ import Alignment from './routes/Alignment';
 
 import {
     Router,
@@ -18,7 +18,7 @@ import history from './history';
 ReactDOM.render(
     <Router history={history}>
         <div>
-            <Route exact path="/" component={App} />
+            <Route exact path="/" component={Alignment} />
             <Route path='/login' component={Login} />
             <Route path='/add' component={Add} />
 

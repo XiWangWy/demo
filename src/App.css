@@ -32,7 +32,7 @@
 }
 
 .InputStyle{
-  width: 100px;
+  width: 400px;
   margin: 10px;
 }
 
@@ -94,6 +94,11 @@
 .footer{
   background-color:antiquewhite;
   text-align: center;
+}
+
+.AlignmentInputStyle{
+  width: 300px;
+  margin: 10px 10px 10px 10px;
 }
 
 

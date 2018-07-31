@@ -3,7 +3,71 @@
  */
 import fetch from  'isomorphic-fetch';
 class Fetch {
-    static  baseUrl = "http://127.0.0.1:8888";
+    static  baseUrl = "http://118.31.220.241:8092";
+    // static  baseUrl = "http://172.16.1.6:8092";
+
+    static  download(url,name){
+        if(url && name){
+            var a = document.createElement('a');
+            var url = url;
+            var filename = name;
+            a.href = url;
+            a.download = filename;
+            a.click();
+        }
+    }
+
+    static get(url,callback){
+        fetch(this.baseUrl + url,
+            {
+                method: "GET",
+                mode:"cors",
+                headers: {
+                    "Content-Type": "text/plain;charset=UTF-8",
+                    'Cache-Control': 'no-cache'
+                }
+            })
+            .then(function(res){
+                if (res.status === 200){
+                    var ss = res.text();
+                    return ss;
+                }else {
+                    callback(res);
+                    console.log(res)
+                }
+            })
+            .then(function (data) {
+                callback(data);
+            })
+            .catch(function (e) {
+                console.log("Error",e)
+            })
+    }
+
+    static test(url,callback){
+        fetch(url,
+            {
+                method: "GET",
+                mode:"cors",
+                headers: {
+                    "Content-Type": "application/json;charset=utf-8"
+                }
+            })
+            .then(function(res){
+                if (res.status === 200){
+                    callback(res);
+                }else {
+                    console.log(res)
+                    callback(res);
+                }
+            })
+            .catch(function (e) {
+                console.log("Error",e)
+            })
+    }
+
+
+
     static fetchPost(url,jsonBody,callback){
 
        //XMLHttpRequest请求
@@ -23,7 +87,7 @@ class Fetch {
         // req.send(JSON.stringify(jsonBody))
 
         //fetch请求
-        fetch(Fetch.baseUrl + url,
+        fetch(this.baseUrl + url,
             {
                 method: "POST",
                 body: JSON.stringify(jsonBody),
@@ -36,6 +100,8 @@ class Fetch {
                 if (res.status === 200){
                     // console.log("res",res.json());
                     return res.json();
+                }else {
+                    console.log(res.json())
                 }
 
 
@@ -43,7 +109,12 @@ class Fetch {
             .then(function(data){
                return callback(data);
             })
+            .catch(function (e) {
+                console.log("Error",e)
+            })
     }
+
+
 
 }
 export  default Fetch;
