@@ -57,6 +57,7 @@ class App extends Component {
         }
     }
 
+
     newDetailLine(type,childIndex,parentIndex,name){
         var index = parentIndex;
         if (type === "症状" || type === "化验"){

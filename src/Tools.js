@@ -40,7 +40,34 @@ class Tools {
     //     // return !(typeof  obj === 'String');
     // }
 
+    static deleteObjInArray(obj,arry){
+        var index = arry.indexOf(obj);
+        if (index > -1){
+            arry.splice(index,1);
+        }
+    }
+
+    static unique(array, array1) {
+    //将array数组转换成set对象
+    var setObj = new Set(array)
+    //循环数组array1，并将值通过add插入set对象中,此时重复数据并不会插入其中
+    for(var i = 0; i < array1.length; i++) {
+        setObj.add(array1[i]);
+    }
+    //使用Array.from()方法将set对象转换成数组，并使用sort()方法排序
+    return Array.from(setObj);
+    }
+
+    static  removeErrorStr(arry){
+        if (arry.length === 1 && arry.indexOf("全部") !== -1){
+            return [];
+        }else {
+            return arry;
+        }
+    }
+
 }
+
 
 
 

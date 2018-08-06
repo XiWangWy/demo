@@ -17,7 +17,18 @@ class Fetch {
         }
     }
 
-    static get(url,callback){
+    static  downloadWithPath(path,name){
+        if(path && name){
+            var a = document.createElement('a');
+            var filename = name;
+            a.href = this.baseUrl + path;
+            a.download = filename;
+            a.click();
+        }
+    }
+
+
+        static get(url,callback){
         fetch(this.baseUrl + url,
             {
                 method: "GET",
@@ -99,7 +110,9 @@ class Fetch {
             .then(function(res){
                 if (res.status === 200){
                     // console.log("res",res.json());
-                    return res.json();
+                    // return res.json();
+                    var ss = res.text();
+                    return ss;
                 }else {
                     console.log(res.json())
                 }
@@ -107,7 +120,7 @@ class Fetch {
 
             })
             .then(function(data){
-               return callback(data);
+                callback(data);
             })
             .catch(function (e) {
                 console.log("Error",e)

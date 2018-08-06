@@ -22,47 +22,89 @@ class Alignment extends Component {
     constructor(props){
         super(props);
         // console.log(this.props.location.state.aa);
-
+        this.state={
+            dataEntity:["全部"],
+            dataNature:["全部"],
+            dataFiled:["全部"],
+            dataHaveEntity:["全部"],
+            dataHaveNature:["全部"],
+            dataHaveFiled:["全部"]
+        }
     }
+
 
     onClick(eve){
 
-
+        var rParams = {};
+        var idParams = {};
+        var params = {};
+        var ids = [];
         if (this.type === 'PPID'){
+            if (Tools.isEmptyObject(this.data['PPID'])){
+                message.error("参数未填写完整");
+                return;
+            }
             delete this.data["boxId"];
+            if(this.data['PPID'].split(/[,，]/).length !== 0){
+                ids = this.data['PPID'].split(/[,，]/);
+                idParams['projectProcessId'] = ids;
+            }
+
         }else {
+            if (Tools.isEmptyObject(this.data['boxId'])){
+                message.error("参数未填写完整");
+                return;
+            }
             delete this.data["PPID"];
+            // params['boxId'] = this.data['boxId'];
+            if(this.data['boxId'].split(/[,，]/).length !== 0){
+                ids = this.data['boxId'].split(/[,，]/);
+                idParams['boxId'] = ids;
+            }
         }
         console.log(this.data)
         console.log(eve)
-        var params =  '';
-        var count = 0;
-        for(var key in this.data){
-            if (!Tools.isEmptyObject(this.data[key])){
-                if(count === 0){
-                    params += "?"  + key + '=' + this.data[key];
-                }else {
-                    params += "&"  + key + '=' + this.data[key];
-                }
-                count++;
-            }
-        }
 
-        var url = '';
-        if (this.type === 'PPID'){
-            console.log("类型是PPID的接口")
-            url = '/align/export/materialByPPID';
-        }else {
-            console.log("类型是BoxId的接口")
-            url = '/align/export/materialByBoxId';
-        }
+        rParams['entityType'] = Tools.removeErrorStr(this.state.dataEntity);
+        rParams['nature'] =  Tools.removeErrorStr(this.state.dataNature);
+        rParams['field'] =  Tools.removeErrorStr(this.state.dataFiled);
 
-       Fetch.get(url + params,(obj)=>{
+        params['elQuery'] = idParams;
+        params['ruleQuery'] = rParams;
+        // var count = 0;
+
+
+        // for(var key in this.data){
+        //     if (!Tools.isEmptyObject(this.data[key]) && this.data[key] !== '' && this.data[key] !== '全部'){
+        //         if(count === 0){
+        //             params += "?"  + key + '=' + this.data[key];
+        //         }else {
+        //             params += "&"  + key + '=' + this.data[key];
+        //         }
+        //         count++;
+        //     }
+        // }
+
+        // var url = '';
+        // if (this.type === 'PPID'){
+        //     console.log("类型是PPID的接口")
+        //     url = '/align/export/materialByPPID';
+        // }else {
+        //     console.log("类型是BoxId的接口")
+        //     url = '/align/export/materialByBoxId';
+        // }
+
+       // Fetch.get(url + params,(obj)=>{
+       //      console.log("下载链接111====>" + obj);
+       //     // Fetch.download();
+       //     Fetch.download(obj,obj.substring(obj.lastIndexOf('/') + 1,obj.length))
+       //  });
+
+        var url = '/align/export/material';
+        Fetch.fetchPost(url,params,(obj)=>{
             console.log("下载链接111====>" + obj);
-           // Fetch.download();
-           Fetch.download(obj,obj.substring(obj.lastIndexOf('/') + 1,obj.length))
-        });
-
+            Fetch.download(obj,obj.substring(obj.lastIndexOf('/') + 1,obj.length))
+        })
 
 
     }
@@ -87,24 +129,181 @@ class Alignment extends Component {
     }
 
 
+
     handleSelectChangeItemEntityType(value){
         console.log("选择的实体类型是===>" + value);
-        this.data['entityType'] = value;
-        console.log(this.data);
+
+        var  arry =  this.state.dataEntity;
+        var  filed = this.state.dataFiled;
+        var index = arry.indexOf("全部");
+        //只存在全部
+        if (index !== -1 && arry.length == 1){
+            arry.splice(index,1)
+        }
+
+        if( value !== "全部"){
+            arry.push(value);
+        }else {
+            arry = ["全部"];
+            filed = ["全部"];
+        }
+
+        this.setState({
+            dataEntity:arry,
+            dataNature:this.state.dataNature,
+            dataFiled:filed
+        });
+        console.log(this.state);
     }
+
+    handleDeSelectChangeItemEntityType(value){
+        console.log("选择的删除实体类型是===>" + value);
+        var  arry =  this.state.dataEntity;
+        var  filed = this.state.dataFiled;
+        if (value === "全部" && arry.length === 1){
+            return;
+        }
+
+        Tools.deleteObjInArray(value,arry)
+
+        if (arry.length > 0){
+            //同时删除该实体下所有的已选字段不存在与其他实体中的字段
+            var currentFileds = [];
+            arry.forEach((item)=>{
+                var fileds = Contants.getTypeData(item)['实体字段名'];
+                currentFileds = Tools.unique(currentFileds,fileds)
+            })
+
+
+            var tmpLeftFiled = filed.concat();
+            filed.forEach((item)=>{
+                var index = currentFileds.indexOf(item);
+                if (index === -1){
+                    tmpLeftFiled.splice(tmpLeftFiled.indexOf(item),1)
+                }
+            })
+
+            filed = tmpLeftFiled;
+        }
+
+
+
+        if(arry.length === 0){
+            arry = ["全部"];
+            filed = ["全部"];
+        }
+
+        if(filed.length === 0){
+            filed = ["全部"];
+        }
+
+        this.setState({
+            dataEntity:arry,
+            dataNature:this.state.dataNature,
+            dataFiled:filed
+        });
+        console.log(this.state);
+    }
+
+    handleSelectEntiKey(value){
+        console.log("选择的实体字段名是===>" + value);
+
+        var arry = this.state.dataFiled;
+        var index = arry.indexOf("全部");
+        //只存在全部
+        if (index !== -1 && arry.length == 1){
+            arry.splice(index,1)
+        }
+
+        if( value !== "全部"){
+            arry.push(value);
+        }else {
+            arry = ["全部"];
+        }
+        this.setState({
+            dataEntity:this.state.dataEntity,
+            dataNature:this.state.dataNature,
+            dataFiled:arry
+        });
+        console.log(this.state);
+    }
+
+    handleDeSelectEntiKey(value){
+        console.log("选择的删除实体字段是===>" + value);
+        var  arry =  this.state.dataFiled;
+        if (value === "全部" && arry.length === 1){
+            return;
+        }
+
+        Tools.deleteObjInArray(value,arry)
+        if(arry.length === 0){
+            arry = ["全部"];
+        }
+        this.setState({
+            dataEntity:this.state.dataEntity,
+            dataNature:this.state.dataNature,
+            dataFiled:arry
+        });
+        console.log(this.state);
+    }
+
+
+    // handleChangeItemEntityType(value){
+    //     console.log(value);
+    // }
 
     handleSelectChangeItemNature(value){
         console.log("选择的词性是===>" + value);
-        this.data['nature'] = value;
-        console.log(this.data);
+
+        var arry = this.state.dataNature;
+        var index = arry.indexOf("全部");
+        //只存在全部
+        if (index !== -1 && arry.length == 1){
+            arry.splice(index,1)
+        }
+
+        if( value !== "全部"){
+            arry.push(value);
+        }else {
+            arry = ["全部"];
+        }
+
+        this.setState({
+            dataEntity:this.state.dataEntity,
+            dataNature:arry,
+            dataFiled:this.state.dataFiled
+        });
+        console.log(this.state);
     }
 
-    onChange(event){
-        this.data['filed'] = event.target.value;
-        console.log(event.target.value)
-        console.log(this.data);
-        console.log(this.type);
+    handleDeSelectChangeItemNature(value){
+        console.log("选择的删除词性是===>" + value);
+        var  arry =  this.state.dataNature;
+        if (value === "全部" && arry.length === 1){
+            return;
+        }
+
+        Tools.deleteObjInArray(value,arry)
+        if (arry.length === 0){
+            arry = ["全部"]
+        }
+
+        this.setState({
+            dataEntity:this.state.dataEntity,
+            dataNature:arry,
+            dataFiled:this.state.dataFiled
+        });
+
     }
+
+
+
+    // onChange(event){
+    //     this.data['filed'] = event.target.value;
+    //     console.log(event.target.value)
+    //     console.log(this.data);
+    //     console.log(this.type);
+    // }
 
     onChangeId(event){
         var data = event.target.value;
@@ -121,11 +320,11 @@ class Alignment extends Component {
         console.log(this.type);
     }
 
-    onChangeBatchNo(event){
-        this.subData['alignBatchNo'] = event.target.value;
-        console.log(event.target.value)
-        console.log(this.subData);
-    }
+    // onChangeBatchNo(event){
+    //     this.subData['alignBatchNo'] = event.target.value;
+    //     console.log(event.target.value)
+    //     console.log(this.subData);
+    // }
 
     onChangeIdSub(event){
         var subData = event.target.value;
@@ -140,26 +339,42 @@ class Alignment extends Component {
     }
 
     onClickExcute(){
-        var obj = {};
-        obj['alignBatchNo'] = this.subData['alignBatchNo'];
-        var id = "";
-        var url = '';
-        var key = 'boxId=';
+        var rParams = {};
+        var params = {};
+        var ids = [];
+        var url = '/align/genAlignEntity';
         if (this.typeSub === 'PPID'){
             console.log("类型是PPID的接口")
-            url = '/align/addAlignByPPID';
-            id  = this.subData['PPID'];
-            key = 'PPID=';
+            if(Tools.isEmptyObject(this.subData['PPID'])){
+                message.error("参数未填写完整");
+                return;
+            }
+
+
+            if(this.subData['PPID'].split(/[,，]/).length !== 0){
+                ids = this.subData['PPID'].split(/[,，]/);
+                params['projectProcessId'] = ids;
+            }
         }else {
             console.log("类型是BoxId的接口")
-            url = '/align/addAlignByBoxId';
-            id  = this.subData['boxId'];
-            key = 'boxId=';
+            if(Tools.isEmptyObject(this.subData['boxId'])){
+                message.error("参数未填写完整");
+                return;
+            }
+            if(this.subData['boxId'].split(/[,，]/).length !== 0){
+                ids = this.subData['boxId'].split(/[,，]/);
+                params['boxId'] = ids;
+            }
         }
 
-        var newUrl = url + "?" + key + id + "&alignBatchNo=" + obj['alignBatchNo'];
-        Fetch.get(newUrl,()=>{
-            console.log("执行完成")
+        // var newUrl = url + "?" + key + id + "&alignBatchNo=" + obj['alignBatchNo'];
+        // Fetch.get(newUrl,()=>{
+        //     console.log("执行完成")
+        //     message.success("提交执行接口成功");
+        // })
+        rParams = params;
+
+        Fetch.fetchPost(url,rParams,(obj)=>{
             message.success("提交执行接口成功");
         })
     }
@@ -170,9 +385,11 @@ class Alignment extends Component {
         if(value === 'BoxId'){
             this.type = 'boxId';
             this.data['boxId'] = this.idStr;
+            delete  this.data['PPID']
         }else {
             this.type = "PPID";
             this.data['PPID'] = this.idStr;
+            delete  this.data['boxId']
         }
 
         console.log(this.data);
@@ -185,9 +402,11 @@ class Alignment extends Component {
         if(value === 'BoxId'){
             this.typeSub = 'boxId';
             this.subData['boxId'] = this.idStrSub;
+            delete this.subData['PPID']
         }else {
             this.typeSub = "PPID";
             this.subData['PPID'] = this.idStrSub;
+            delete this.subData['boxId']
         }
 
         console.log(this.subData);
@@ -195,40 +414,208 @@ class Alignment extends Component {
 
     handleSelectChangeItemEntityTypeHave(value){
         console.log("选择的实体类型是===>" + value);
-        this.dataHave['entityType'] = value;
-        console.log(this.data);
-    }
 
-    handleSelectChangeItemNatureHave(value){
-        console.log("选择的实体类型是===>" + value);
-        this.dataHave['nature'] = value;
-        console.log(this.data);
-    }
-
-    onClickHave(eve){
-        var params =  '';
-        var count = 0;
-        for(var key in this.dataHave){
-            if (!Tools.isEmptyObject(this.dataHave[key])){
-                if(count === 0){
-                    params += "?"  + key + '=' + this.dataHave[key];
-                }else {
-                    params += "&"  + key + '=' + this.dataHave[key];
-                }
-                count++;
-            }
+        var  arry =  this.state.dataHaveEntity;
+        var  filed = this.state.dataHaveFiled;
+        var index = arry.indexOf("全部");
+        //只存在全部
+        if (index !== -1 && arry.length == 1){
+            arry.splice(index,1)
         }
 
-        var url = '/align/export/alignRule';
+        if( value !== "全部"){
+            arry.push(value);
+        }else {
+            arry = ["全部"];
+            filed = ["全部"];
+        }
 
-        Fetch.get(url + params,(obj)=>{
-            console.log("下载链接111====>" + obj);
-            // Fetch.download();
-            Fetch.download(obj,obj.substring(obj.lastIndexOf('/') + 1,obj.length))
+        this.setState({
+            dataHaveEntity:arry,
+            dataHaveNature:this.state.dataHaveNature,
+            dataHaveFiled:filed
+        });
+        // console.log(this.state);
+    }
+
+    handleDeSelectChangeItemEntityTypeHave(value){
+        console.log("选择的删除实体类型是===>" + value);
+        var  arry =  this.state.dataHaveEntity;
+        var  filed = this.state.dataHaveFiled;
+        if (value === "全部" && arry.length === 1){
+            return;
+        }
+
+        Tools.deleteObjInArray(value,arry)
+
+        if (arry.length > 0){
+            //同时删除该实体下所有的已选字段不存在与其他实体中的字段
+            var currentFileds = [];
+            arry.forEach((item)=>{
+                var fileds = Contants.getTypeData(item)['实体字段名'];
+                currentFileds = Tools.unique(currentFileds,fileds)
+            })
+
+
+            var tmpLeftFiled = filed.concat();
+            filed.forEach((item)=>{
+                var index = currentFileds.indexOf(item);
+                if (index === -1){
+                    tmpLeftFiled.splice(tmpLeftFiled.indexOf(item),1)
+                }
+            })
+
+            filed = tmpLeftFiled;
+        }
+
+
+
+        if(arry.length === 0){
+            arry = ["全部"];
+            filed = ["全部"];
+        }
+
+        if(filed.length === 0){
+            filed = ["全部"];
+        }
+
+        this.setState({
+            dataHaveEntity:arry,
+            dataHaveNature:this.state.dataHaveNature,
+            dataHaveFiled:filed
         });
     }
 
+
+    handleSelectChangeItemNatureHave(value){
+        console.log("选择的词性是===>" + value);
+
+        var arry = this.state.dataHaveNature;
+        var index = arry.indexOf("全部");
+        //只存在全部
+        if (index !== -1 && arry.length == 1){
+            arry.splice(index,1)
+        }
+
+        if( value !== "全部"){
+            arry.push(value);
+        }else {
+            arry = ["全部"];
+        }
+
+        this.setState({
+            dataHaveEntity:this.state.dataHaveEntity,
+            dataHaveNature:arry,
+            dataHaveFiled:this.state.dataHaveFiled
+        });
+
+    }
+
+
+    handleSelectEntiKeyHave(value){
+        console.log("选择的实体字段名是===>" + value);
+
+        var arry = this.state.dataHaveFiled;
+        var index = arry.indexOf("全部");
+        //只存在全部
+        if (index !== -1 && arry.length == 1){
+            arry.splice(index,1)
+        }
+
+        if( value !== "全部"){
+            arry.push(value);
+        }else {
+            arry = ["全部"];
+        }
+        this.setState({
+            dataHaveEntity:this.state.dataHaveEntity,
+            dataHaveNature:this.state.dataHaveNature,
+            dataHaveFiled:arry
+        });
+    }
+
+
+    handleDeSelectEntiKeyHave(value){
+        console.log("选择的删除实体字段是===>" + value);
+        var  arry =  this.state.dataHaveFiled;
+        if (value === "全部" && arry.length === 1){
+            return;
+        }
+
+        Tools.deleteObjInArray(value,arry)
+        if(arry.length === 0){
+            arry = ["全部"];
+        }
+        this.setState({
+            dataHaveEntity:this.state.dataHaveEntity,
+            dataHaveNature:this.state.dataHaveNature,
+            dataHaveFiled:arry
+        });
+        console.log(this.state);
+    }
+
+
+    handleDeSelectChangeItemNatureHave(value){
+        console.log("选择的删除词性是===>" + value);
+        var  arry =  this.state.dataHaveNature;
+        if (value === "全部" && arry.length === 1){
+            return;
+        }
+
+        Tools.deleteObjInArray(value,arry)
+        if(arry.length === 0){
+            arry = ["全部"];
+        }
+        this.setState({
+            dataHaveEntity:this.state.dataHaveEntity,
+            dataHaveNature:arry,
+            dataHaveFiled:this.state.dataHaveFiled
+        });
+    }
+
+    onClickHave(eve){
+        var rParams = {};
+        var params = {};
+        console.log(this.data)
+        console.log(eve)
+
+        params['entityType'] = Tools.removeErrorStr(this.state.dataHaveEntity);
+        params['nature'] = Tools.removeErrorStr(this.state.dataHaveNature);
+        params['field'] = Tools.removeErrorStr(this.state.dataHaveFiled);
+
+
+        var url = '/align/export/alignRule';
+
+        Fetch.fetchPost(url,params,(obj)=>{
+            Fetch.download(obj,obj.substring(obj.lastIndexOf('/') + 1,obj.length))
+        })
+
+    }
+
+    downloadAll(eve){
+        var url = "/align/export/history";
+        var params = "?operateType=EXPORT_RULE";
+        Fetch.downloadWithPath(url+params,"EXPORT_RULE_History.txt")
+
+        // Fetch.downloadWithPath("http://localhost:8000/download","EXPORT_RULE_History.txt")
+    }
+
+    downloadSome(eve){
+        var url = "/align/export/history";
+        var params = "?operateType=GEN_RULE";
+
+        Fetch.downloadWithPath(url+params,"GEN_RULE_History.txt")
+    }
+
+    downloadUpdate(eve){
+        var url = "/align/export/history";
+        var params = "?operateType=UPDATE_ALIGN";
+        Fetch.downloadWithPath(url+params,"UPDATE_ALIGN_History.txt")
+    }
+
+
     render() {
+        console.log(this.state);
         return (
             <div className="App">
 
@@ -238,37 +625,76 @@ class Alignment extends Component {
                 </Select>
 
                 <Input className="AlignmentInputStyle" placeholder="BoxId/PPID" onChange={this.onChangeId.bind(this)}/>
-                <Select defaultValue = "实体类型" style={{ width: 120 }} name = "entityType" onSelect={this.handleSelectChangeItemEntityType.bind(this)}>
-                    {
-                        (()=>{
-                            let typeArray = [];
-                           var obj =  Contants.getAllType();
-                           for(var key in obj){
-                               typeArray.push(<Option value={key}>{key}</Option>)
-                           }
-                           return typeArray;
-                        })()
-                    }
-                </Select>
+                    <label style={{margin:"10px"}}>实体类型:</label>
+                    <Select mode = 'multiple' value = {this.state.dataEntity} style={{ width: 120 }} name = "entityType"  onDeselect={this.handleDeSelectChangeItemEntityType.bind(this)} onSelect={this.handleSelectChangeItemEntityType.bind(this)}>
+                        {
+                            (()=>{
+                                var obj = Contants.getAllType();
+                                var typeArray = [];
 
-                <Select defaultValue = "词性" style={{ width: 120,margin:"10px" }} name = "nature" onSelect={this.handleSelectChangeItemNature.bind(this)}>
+                                typeArray.push(<Option value="全部">全部</Option>)
+                                for(var key in obj){
+                                    typeArray.push(<Option value={key} >{key}</Option>)
+                                }
+                                return typeArray;
+                            })()
+                        }
+                    </Select>
+
+                <label style={{margin:"10px 0 10px 10px"}}>实体字段名:</label>
+                <Select mode = 'multiple' value =  {this.state.dataFiled} style={{ width: 120,margin:"10px" }} name = "实体字段名"  onDeselect={this.handleDeSelectEntiKey.bind(this)} onSelect={this.handleSelectEntiKey.bind(this)}>
                     {
                         (()=>{
                             let array = [];
-                            var obj =  Contants.getAllType();
-                            for(var key in obj){
-                                var children = obj[key];
-                                for (var childObj in children){
-                                    array.push(<Option value={children[childObj]}>{children[childObj]}</Option>)
-                                }
-
+                            var value =  this.state.dataEntity;
+                            if (value === undefined || (value.length ===1 && value.indexOf('全部') !== -1)){
+                                return array;
                             }
-                          return array;
+
+                           var selectNatures = [];
+                           value.forEach((key)=>{
+                               var obj = Contants.getTypeData(key);
+                               var natures = obj['实体字段名'];
+                               selectNatures = Tools.unique(selectNatures,natures);
+                           })
+                            array.push(<Option value="全部">全部</Option>)
+                            selectNatures.forEach((item) =>{
+                                array.push(<Option value={item}>{item}</Option>)
+                            })
+                            return array;
                         })()
                     }
 
                 </Select>
+
+                     <label style={{margin:"10px 0 10px 10px"}}>词性:</label>
+                <Select  mode = 'multiple' value = {this.state.dataNature} style={{ width: 120,margin:"10px" }} name = "nature" onDeselect={this.handleDeSelectChangeItemNature.bind(this)} onSelect={this.handleSelectChangeItemNature.bind(this)}>
+                    {
+                        (()=>{
+                            let array = [];
+                            var value =  this.state.dataEntity;
+                            if (value === undefined || (value.length ===1 && value.indexOf('全部') !== -1)){
+                                return array;
+                            }
+
+                            var natures = Contants.getAllNatures();
+                            {/*var natures = obj['词性'];*/}
+                            array.push(<Option value="全部">全部</Option>)
+                            natures.forEach((item) =>{
+                                array.push(<Option value={item}>{item}</Option>)
+                            })
+
+                            return array;
+                        })()
+
+                    }
+
+                </Select>
+
+
                 <Button type="primary" style={{margin:"10px"}} onClick={this.onClick.bind(this)}>下载素材</Button>
+                <Button type="primary" style={{margin:"10px"}} onClick={this.downloadSome.bind(this)}>下载操作记录</Button>
+
                 <div className="InputStyle">
                     <Dragger  {...this.upload}>
                         <Button>
@@ -284,15 +710,18 @@ class Alignment extends Component {
                     <Option value='PPID'>PPID</Option>
                 </Select>
                 <Input className="AlignmentInputStyle" placeholder="BoxId/PPID" onChange={this.onChangeIdSub.bind(this)}/>
-                <Input className="AlignmentInputStyle" placeholder="alignBatchNo" onChange={this.onChangeBatchNo.bind(this)}/>
+                {/*<Input className="AlignmentInputStyle" placeholder="alignBatchNo" onChange={this.onChangeBatchNo.bind(this)}/>*/}
                 <Button type="primary" onClick={this.onClickExcute.bind(this)}>执行对齐操作</Button>
+                <Button type="primary" style={{margin:"10px"}} onClick={this.downloadUpdate.bind(this)}>下载操作记录</Button>
 
                 <div style={{margin:"10px"}}>
-                    <Select defaultValue = "实体类型" style={{ width: 120 }} name = "entityType" onSelect={this.handleSelectChangeItemEntityTypeHave.bind(this)}>
+                    <label style={{margin:"10px"}}>实体类型:</label>
+                    <Select mode = 'multiple' value = {this.state.dataHaveEntity} style={{ width: 120 }} name = "entityType"  onDeselect={this.handleDeSelectChangeItemEntityTypeHave.bind(this)}  onSelect={this.handleSelectChangeItemEntityTypeHave.bind(this)}>
                         {
                             (()=>{
                                 let typeArray = [];
                                 var obj =  Contants.getAllType();
+                                typeArray.push(<Option value="全部">全部</Option>)
                                 for(var key in obj){
                                     typeArray.push(<Option value={key}>{key}</Option>)
                                 }
@@ -300,25 +729,58 @@ class Alignment extends Component {
                             })()
                         }
                     </Select>
-
-                <Select defaultValue = "词性" style={{ width: 120,margin:"10px" }} name = "nature" onSelect={this.handleSelectChangeItemNatureHave.bind(this)}>
-                    {
-                        (()=>{
-                            let array = [];
-                            var obj =  Contants.getAllType();
-                            for(var key in obj){
-                                var children = obj[key];
-                                for (var childObj in children){
-                                    array.push(<Option value={children[childObj]}>{children[childObj]}</Option>)
+                    <label style={{margin:"10px 0 10px 10px"}}>实体字段名:</label>
+                    <Select mode = 'multiple' value = {this.state.dataHaveFiled} style={{ width: 120,margin:"10px" }} name = "实体字段名" onDeselect={this.handleDeSelectEntiKeyHave.bind(this)} onSelect={this.handleSelectEntiKeyHave.bind(this)}>
+                        {
+                            (()=>{
+                                let array = [];
+                                var value =  this.state.dataHaveEntity;
+                                if (value === undefined || (value.length ===1 && value.indexOf('全部') !== -1)){
+                                    return array;
                                 }
 
-                            }
-                            return array;
-                        })()
-                    }
+                                var selectNatures = [];
+                                value.forEach((key)=>{
+                                    var obj = Contants.getTypeData(key);
+                                    var natures = obj['实体字段名'];
+                                    selectNatures = Tools.unique(selectNatures,natures);
+                                })
+                                array.push(<Option value="全部">全部</Option>)
+                                selectNatures.forEach((item) =>{
+                                    array.push(<Option value={item}>{item}</Option>)
+                                })
+                                return array;
+                            })()
+                        }
 
-                </Select>
+                    </Select>
+
+
+                    <label style={{margin:"10px 0 10px 10px"}}>词性:</label>
+                    <Select mode = 'multiple' value = {this.state.dataHaveNature} style={{ width: 120,margin:"10px" }} name = "nature" onDeselect={this.handleDeSelectChangeItemNatureHave.bind(this)} onSelect={this.handleSelectChangeItemNatureHave.bind(this)}>
+                        {
+                            (()=>{
+                                let array = [];
+                                var value =  this.state.dataHaveEntity;
+                                if (value === undefined || (value.length ===1 && value.indexOf('全部') !== -1)){
+                                    return array;
+                                }
+
+                                var natures = Contants.getAllNatures();
+                                {/*var natures = obj['词性'];*/}
+                                array.push(<Option value="全部">全部</Option>)
+                                natures.forEach((item) =>{
+                                    array.push(<Option value={item}>{item}</Option>)
+                                })
+
+                                return array;
+                            })()
+
+                        }
+
+                    </Select>
                 <Button type="primary" style={{margin:"10px"}} onClick={this.onClickHave.bind(this)}>下载已有规则素材</Button>
+                    <Button type="primary" style={{margin:"10px"}} onClick={this.downloadAll.bind(this)}>下载操作记录</Button>
                 </div>
             </div>
         );
