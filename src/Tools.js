@@ -2,6 +2,30 @@
  * Created by wangxi on 18/7/20.
  */
 class Tools {
+    static storage = window.localStorage;
+
+    /**
+     * 获取缓存中类容
+     * @param key
+     * @returns {*}
+     */
+    static getStoryageItem(key){
+        if (this.storage){
+            return this.storage.getItem(key);
+        }
+    }
+
+    static  setStoryageItem(key,value){
+        if (this.storage){
+            return this.storage.setItem(key,value);
+        }
+    }
+
+    static reMoveStoryageItem(key){
+        if (this.storage){
+            return this.storage.removeItem(key) ;
+        }
+    }
        /**
      * 判断对象是否为空
      * @param obj
@@ -35,16 +59,12 @@ class Tools {
     return String.fromCharCode.apply(null, new Uint16Array(buf));
     }
 
-    // static isLong(obj){
-    //     return typeof obj == 'long' || typeof obj == 'int';
-    //     // return !(typeof  obj === 'String');
-    // }
-
     static deleteObjInArray(obj,arry){
         var index = arry.indexOf(obj);
         if (index > -1){
             arry.splice(index,1);
         }
+        return arry;
     }
 
     static unique(array, array1) {

@@ -1,34 +1,41 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
-import Login from './routes/Login';
-import Add from './Add';
- import Alignment from './routes/Alignment';
+import { Form } from 'antd';
+import AlignLogin from  './routes/alignment/AlignLogin';
+import SourceMaterial from  './routes/alignment/SourceMaterial';
+import Task from  './routes/alignment/Task';
+import TaskDetail from  './routes/alignment/TaskDetail';
+import Examine from  './routes/alignment/Examine';
 
+import registerServiceWorker from './registerServiceWorker';
+import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
 import {
     Router,
-    Route,
-    Link
+    Route
 } from 'react-router-dom'
 
 import history from './history';
 
+const WrappedNormalLoginForm = Form.create()(AlignLogin);
+
 ReactDOM.render(
     <Router history={history}>
         <div>
-            <Route exact path="/" component={Alignment} />
-            <Route path='/login' component={Login} />
-            <Route path='/add' component={Add} />
+            <Route exact path="/login" component={WrappedNormalLoginForm} />
 
 
 
+            <CacheSwitch>
+                <CacheRoute exact path="/task" component={Task} when="always"/>
+                <Route path='/source' component={SourceMaterial} />
+                <Route path='/exam' component={Examine}  />
+                <CacheRoute exact path='/task/detail'  component={TaskDetail} when="forward"/>
+            </CacheSwitch>
 
 
 
         </div>
-        {/*<App/>*/}
     </Router>
     , document.getElementById('root'));
 registerServiceWorker();

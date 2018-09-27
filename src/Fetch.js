@@ -2,9 +2,13 @@
  * Created by wangxi on 17/6/1.
  */
 import fetch from  'isomorphic-fetch';
+import history from './history';
+import { message} from 'antd';
 class Fetch {
-    static  baseUrl = "http://118.31.220.241:8092";
+    // static  baseUrl = "http://118.31.220.241:8092";
     // static  baseUrl = "http://172.16.1.6:8092";
+    static  baseUrl = "http://172.16.1.34:8080";
+    static storage = window.localStorage;
 
     static  download(url,name){
         if(url && name){
@@ -29,13 +33,24 @@ class Fetch {
 
 
         static get(url,callback){
-        fetch(this.baseUrl + url,
+            try
+            {
+                console.log(JSON.parse(this.storage.getItem('data'))['token'])
+            }
+            catch(err)
+            {
+                history.replace('/login')
+                return;
+            }
+
+        fetch(encodeURI(this.baseUrl + url),
             {
                 method: "GET",
                 mode:"cors",
                 headers: {
-                    "Content-Type": "text/plain;charset=UTF-8",
-                    'Cache-Control': 'no-cache'
+                    "Content-Type": "application/json;charset=UTF-8",
+                    'Cache-Control': 'no-cache',
+                    'token':  JSON.parse(this.storage.getItem('data'))['token']
                 }
             })
             .then(function(res){
@@ -62,6 +77,9 @@ class Fetch {
                 mode:"cors",
                 headers: {
                     "Content-Type": "application/json;charset=utf-8"
+                },
+                xhrFields: {
+                    withCredentials: true
                 }
             })
             .then(function(res){
@@ -77,38 +95,23 @@ class Fetch {
             })
     }
 
-
-
-    static fetchPost(url,jsonBody,callback){
-
-       //XMLHttpRequest请求
-        //
-        // const req = new XMLHttpRequest();
-        // req.onload = function () {
-        //     if(this.status === 200||this.status === 304){
-        //         console.log("responese",req.response);
-        //         callback(JSON.parse(req.response));
-        //     }
-        // }
-        //
-        //
-        // req.open('POST', Fetch.baseUrl + url)
-        // req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
-        //
-        // req.send(JSON.stringify(jsonBody))
-
-        //fetch请求
-        fetch(this.baseUrl + url,
+    static testPost(url,jsonBody,callback){
+        fetch(url,
             {
                 method: "POST",
                 body: JSON.stringify(jsonBody),
                 mode:"cors",
                 headers: {
                     "Content-Type": "application/json;charset=utf-8"
-                }
+                },
+                xhrFields: {
+                    withCredentials: true
+                },
+                credentials: 'include'
             })
             .then(function(res){
                 if (res.status === 200){
+                    // var cookie = res.getResponseHeader('Set-Cookie')
                     // console.log("res",res.json());
                     // return res.json();
                     var ss = res.text();
@@ -124,6 +127,43 @@ class Fetch {
             })
             .catch(function (e) {
                 console.log("Error",e)
+            })
+    }
+
+    static fetchPost(url,jsonBody,callback){
+        //fetch请求
+        fetch(this.baseUrl + url,
+            {
+                method: "POST",
+                body: JSON.stringify(jsonBody),
+                mode:"cors",
+                headers: {
+                    "Content-Type": "application/json;charset=utf-8",
+                    'Cache-Control': 'no-cache',
+                    'token':  this.storage.getItem('data') == null ? "" : JSON.parse(this.storage.getItem('data'))['token']
+                }
+            })
+            .then(function(res){
+                if (res.status === 200){
+                    // console.log("res",res.json());
+                    // var heads = res.headers;
+                    // return res.json();
+                    var ss = res.text();
+                    return ss;
+                }else {
+                    // console.log(res.text())
+                    return res.text();
+                    // callback(error);
+                }
+
+
+            })
+            .then(function(data){
+                callback(data);
+            })
+            .catch(function (e) {
+                console.log("Error",e)
+                message.error(e)
             })
     }
 

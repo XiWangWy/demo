@@ -6,7 +6,7 @@ import { Component } from 'react';
 import '../App.css';
 import { Button } from 'antd';
 import history from '../history';
-
+import Fetch from '../Fetch.js'
 
 class Login extends Component {
 
@@ -21,6 +21,10 @@ class Login extends Component {
 
     onClick(e){
         // history.push(this.props.match.url + "/mytest");
+        var obj = {'username':"wx"}
+        Fetch.testPost("http://localhost:8000/findUser",obj,(obj)=>{
+            console.log(obj.toString())
+        })
     }
 
     render() {

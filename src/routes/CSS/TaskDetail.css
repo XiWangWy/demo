@@ -1,0 +1,27 @@
+.divStyle{
+    margin-top: 10px;
+}
+
+.projectName{
+    margin: 10px 2px 10px 10px
+}
+
+.projectNameValue{
+    width: 300px;
+    margin: 10px 2px 10px 10px;
+    /*background-color: aquamarine;*/
+}
+.selectMode{
+    width: 150px;
+    margin: 10px 10px 10px 200px
+}
+
+.selectDoc{
+    width: 150px;
+    margin: 10px 10px 10px 10px
+}
+
+.listDivStyle{
+    margin: 10px;
+    width: 600px;
+}
