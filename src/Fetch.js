@@ -29,6 +29,11 @@ class Fetch {
     }
 
 
+    /**
+     * get请求
+     * @param url
+     * @param callback
+     */
     static get(url, callback) {
         try {
             console.log(JSON.parse(this.storage.getItem('data'))['token'])
@@ -60,6 +65,57 @@ class Fetch {
             console.log("Error", e)
         })
     }
+
+    /**
+     * post请求
+     * @param url
+     * @param jsonBody
+     * @param callback
+     */
+    static fetchPost(url,jsonBody,callback){
+        //除去登录所有接口没有token就跳转到login
+        if(url.indexOf('login') == -1){
+            try {
+                console.log(JSON.parse(this.storage.getItem('data'))['token'])
+            } catch(err) {
+                history.replace('/login')
+                return;
+            }
+        }
+
+        //fetch请求
+        fetch(this.baseUrl + url,
+            {
+                method: "POST",
+                body: JSON.stringify(jsonBody),
+                mode:"cors",
+                headers: {
+                    "Content-Type": "application/json;charset=utf-8",
+                    'Cache-Control': 'no-cache',
+                    'token':  this.storage.getItem('data') == null ? "" : JSON.parse(this.storage.getItem('data'))['token']
+                }
+            })
+            .then(function(res){
+                if (res.status === 200){
+                    var ss = res.text();
+                    return ss;
+                }else {
+                    return res.text();
+                }
+
+
+            })
+            .then(function(data){
+                callback(data);
+            })
+            .catch(function (e) {
+                console.log("Error",e)
+            })
+    }
+
+
+
+
 
     static test(url, callback) {
         fetch(url, {
@@ -114,36 +170,7 @@ class Fetch {
             })
     }
 
-    static fetchPost(url,jsonBody,callback){
-        //fetch请求
-        fetch(this.baseUrl + url,
-            {
-                method: "POST",
-                body: JSON.stringify(jsonBody),
-                mode:"cors",
-                headers: {
-                    "Content-Type": "application/json;charset=utf-8",
-                    'Cache-Control': 'no-cache',
-                    'token':  this.storage.getItem('data') == null ? "" : JSON.parse(this.storage.getItem('data'))['token']
-                }
-            })
-            .then(function(res){
-                if (res.status === 200){
-                    var ss = res.text();
-                    return ss;
-                }else {
-                    return res.text();
-                }
 
-
-            })
-            .then(function(data){
-                callback(data);
-            })
-            .catch(function (e) {
-                console.log("Error",e)
-            })
-    }
 
 
 

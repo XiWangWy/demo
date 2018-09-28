@@ -52,13 +52,14 @@ class  ListItem extends Component {
 
 
                     {/*<Button style={{margin:"10px"}} type="primary" onClick={this.uploadTask.bind(this,this.state.item)}>上传审核结果</Button>*/}
-                    <Button  disabled = {this.statusCompare(this.state.item.status,"重新导出素材")} style={{margin:"10px"}} type="primary" onClick={this.reExport.bind(this,this.state.item)}>重新导出素材</Button>
+
                     <Button disabled = {this.statusCompare(this.state.item.status,"下载审核任务")}  style={{margin:"10px"}}  type="primary" onClick={this.downloadTask.bind(this,this.state.item)}>下载审核任务</Button>
                     <Upload  style={{margin:"10px"}} {...this.upload}>
                         <Button type="primary" disabled = {this.statusCompare(this.state.item.status,"上传审核结果")} >
                             上传审核结果
                         </Button>
                     </Upload>
+                    <Button  disabled = {this.statusCompare(this.state.item.status,"重新导出素材")} style={{margin:"10px"}} type="primary" onClick={this.reExport.bind(this,this.state.item)}>重新导出素材</Button>
                 </div>
 
                 <div className="line">
