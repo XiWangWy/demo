@@ -8,9 +8,12 @@ import '../CSS/Task.css';
 import Fetch from '../../Fetch.js'
 import TaskList from  './TaskList';
 import Contants from  '../../Constants'
-import {Modal,Input, Button,Select} from 'antd';
+import Tools from '../../Tools'
+import {Tabs,Modal,Input, Button,Select,message} from 'antd';
+const TabPane = Tabs.TabPane;
 const Option = Select.Option
 const confirm = Modal.confirm;
+
 
 class Task extends Component{
 
@@ -47,60 +50,84 @@ class Task extends Component{
         this._isMounted = false;
     }
 
+    operations = <Button  style = {{margin:"10px"}} onClick={this.exitLogin.bind(this)}>退出</Button>;
 
     render(){
         return(
 
-            <div className="parent">
-                {/*<div>*/}
-                    {/*<Input placeholder = "项目名称" style={{ width:150,margin:"10px" }} onChange = {this.projectNameChange.bind(this)}></Input>*/}
-                {/*</div>*/}
-
+            <div >
                 <div>
-                    <Select defaultValue = "boxId" style={{ width:150,margin:"10px" }} onSelect = {this.selectIdType.bind(this)}>
-                        {
-                            (()=>{
-                                let array = [];
-                                let ids = ["boxId","PPID"];
-                                for(var i = 1 ;i < ids.length ;i++){
-                                    array.push(<Option key = {ids[i]} value={ids[i]}>{ids[i]}</Option>)
-                                }
-                                return array;
-                            })()
-                        }
-                    </Select>
-                    <Input className="boxIdStyle" placeholder = "boxId" onChange={this.BoxIdChange.bind(this)}></Input>
-                    <Select defaultValue = {this.state.currentEntityType} style={{ width:150,margin:"10px" }} onSelect = {this.entityType.bind(this)}>
-                        {
-                            (()=>{
-                                let array = [];
-                                for(var i = 0 ;i < this.EntityTypeData.length ;i++){
-                                    array.push(<Option key = {this.EntityTypeData[i]} value={this.EntityTypeData[i]}>{this.EntityTypeData[i]}</Option>)
-                                }
-                                return array;
-                            })()
-                        }
-                    </Select>
-                    <Select defaultValue = {this.state.currentNature} style={{ width: 150,margin:"10px" }} onSelect = {this.entityNature.bind(this)}>
-                        {
-                            (()=>{
-                                let array = [];
-                                var natures = Contants.getName(this.state.currentEntityType);
-                                for(var i = 0 ;i < natures.length ;i++){
-                                    array.push(<Option key = {natures[i]} value={natures[i]}>{natures[i]}</Option>)
-                                }
-                                return array;
-                            })()
-                        }
-                    </Select>
-                    <Button type = "primary" onClick={this.getSoure.bind(this)}>获取对齐素材</Button>
+                    <Tabs tabBarExtraContent={this.operations}>
+                        <TabPane tab="对齐工具" key="1">
+                            {
+                                (()=>{
+                                    return (
+                                        <div className="parent">
+                                            <div>
+                                                <Select defaultValue = "boxId" style={{ width:150,margin:"10px" }} onSelect = {this.selectIdType.bind(this)}>
+                                                    {
+                                                        (()=>{
+                                                            let array = [];
+                                                            let ids = ["boxId","PPID"];
+                                                            for(var i = 1 ;i < ids.length ;i++){
+                                                                array.push(<Option key = {ids[i]} value={ids[i]}>{ids[i]}</Option>)
+                                                            }
+                                                            return array;
+                                                        })()
+                                                    }
+                                                </Select>
+                                                <Input className="boxIdStyle" placeholder = "boxId" onChange={this.BoxIdChange.bind(this)}></Input>
+                                                <Select defaultValue = {this.state.currentEntityType} style={{ width:150,margin:"10px" }} onSelect = {this.entityType.bind(this)}>
+                                                    {
+                                                        (()=>{
+                                                            let array = [];
+                                                            for(var i = 0 ;i < this.EntityTypeData.length ;i++){
+                                                                array.push(<Option key = {this.EntityTypeData[i]} value={this.EntityTypeData[i]}>{this.EntityTypeData[i]}</Option>)
+                                                            }
+                                                            return array;
+                                                        })()
+                                                    }
+                                                </Select>
+                                                <Select defaultValue = {this.state.currentNature} style={{ width: 150,margin:"10px" }} onSelect = {this.entityNature.bind(this)}>
+                                                    {
+                                                        (()=>{
+                                                            let array = [];
+                                                            var natures = Contants.getName(this.state.currentEntityType);
+                                                            for(var i = 0 ;i < natures.length ;i++){
+                                                                array.push(<Option key = {natures[i]} value={natures[i]}>{natures[i]}</Option>)
+                                                            }
+                                                            return array;
+                                                        })()
+                                                    }
+                                                </Select>
+                                                <Button type = "primary" onClick={this.getSoure.bind(this)}>获取对齐素材</Button>
+                                                {/*<Button type = "primary" style = { {margin:"10px"}} onClick={this.exitLogin.bind(this)}>退出</Button>*/}
+                                            </div>
+
+                                            <div className = "taskList">
+                                                <TaskList list = {this.state.list} {...this.props}></TaskList>
+                                            </div>
+                                        </div>
+                                    );
+                                })()
+                            }
+                        </TabPane>
+                        {/*<TabPane tab="对齐工具2" key="2">aaaa</TabPane>*/}
+                    </Tabs>
                 </div>
 
-                <div className = "taskList">
-                    <TaskList list = {this.state.list} {...this.props}></TaskList>
-                </div>
+
+
             </div>
         );
+    }
+
+    /**
+     * 退出登录
+     */
+    exitLogin(){
+       Tools.reMoveStoryageItem('data');
+       this.props.history.replace('/login')
     }
 
     /**
@@ -147,6 +174,11 @@ class Task extends Component{
         params['entityType'] = this.state.currentEntityType;
         params['field'] = this.state.currentNature;
         params['dataBase'] = 'DPS';
+
+        if(this.state.boxId == "" ||  params['entityType'] == "空" || params['field'] == "空"){
+            message.error("请填入完整信息！")
+            return;
+        }
 
         var url = "/manage/create/project";
         Fetch.fetchPost(url,params,(Obj)=>{

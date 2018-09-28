@@ -7,6 +7,11 @@ class Fetch {
     static  baseUrl = "http://172.16.1.34:8080";
     static storage = window.localStorage;
 
+    /**
+     * 下载文件
+     * @param url
+     * @param name
+     */
     static  download(url,name){
         if(url && name){
             var a = document.createElement('a');
@@ -55,8 +60,9 @@ class Fetch {
                 var ss = res.text();
                 return ss;
             } else {
-                callback(res);
+                // callback(res.text());
                 console.log(res)
+                return res.text();
             }
         }).then(function(data) {
             callback(data);

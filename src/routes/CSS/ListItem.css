@@ -16,11 +16,14 @@
 }
 
 .firstButton{
-    margin: 10px 10px 10px 90px
+    margin: 10px 10px 10px 60px
 }
 
 .tittleLabel{
-    margin: 10px;
+    margin: 10px 10px 10px 0px;
+    width: 100px;
+    /*background-color: red;*/
+    display: inline-block;
 }
 
 .line{

@@ -167,8 +167,10 @@ class TaskDetail extends Component {
      */
     selectMod(value){
         this.setState({
-            mode:value
+            mode:value,
+            doctors:["选择医生"]
         });
+
     }
 
     /**
@@ -191,10 +193,17 @@ class TaskDetail extends Component {
      */
     selectDoc(value){
         var docs =  this.state.doctors;
-        docs.push(value);
-        this.setState({
-            doctors:Tools.deleteObjInArray("选择医生",docs)
-        });
+        if (this.state.mode != "多人模式"){
+            this.setState({
+                doctors:[value]
+            });
+        }else {
+            docs.push(value);
+            this.setState({
+                doctors:Tools.deleteObjInArray("选择医生",docs)
+            });
+        }
+
     }
 
     /**
@@ -208,6 +217,10 @@ class TaskDetail extends Component {
         params['batchNo'] = Tools.getStoryageItem('taskBatchNo');
         params['mode'] = this.state.mode === "多人模式" ? "MULTIPLE" : "SINGLE";
         params['userNames'] = this.state.doctors;
+        if (this.state.doctors.length == 1 && this.state.doctors.indexOf("选择医生") != -1){
+            message.error("请先选择医生！")
+            return;
+        }
         Fetch.fetchPost(url,params,(Obj)=>{
             console.log(Obj)
             message.success("添加医生成功！")

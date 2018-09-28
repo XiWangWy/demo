@@ -6,9 +6,10 @@ import { Component } from 'react';
 import '../CSS/SourceMaterial.css';
 import MyTable from  './MyTable'
 import Fetch from '../../Fetch.js'
-import { message, Input, Button,Select, } from 'antd';
+import { Tabs,message, Input, Button,Select, } from 'antd';
+import Tools from  '../../Tools'
 const Option = Select.Option
-
+const TabPane = Tabs.TabPane;
 class SourceMaterial extends Component {
 
     _isMounted = false;
@@ -55,38 +56,58 @@ class SourceMaterial extends Component {
         this._isMounted = false;
     }
 
+    operations = <Button  style = {{margin:"10px"}} onClick={this.exitLogin.bind(this)}>退出</Button>;
+
 
     render(){
         return(
-            <div className="parent">
+            <div >
                 <div>
-                    <label style={{margin:"10px"}}>选择任务</label>
-                    <Select value = {this.state.currentName} style={{ width: 300,margin:"10px" }} onChange = {this.selectTask.bind(this)}>
-                        {
-                            (()=>{
-                                let array = [];
-                                var names = this.state.projectNames;
-                                for(var i = 0 ;i < names.length ;i++){
-                                    array.push(<Option key = {i} value={names[i]}>{names[i]}</Option>)
-                                }
-                                return array;
-                            })()
-                        }
-                    </Select>
+                    <Tabs tabBarExtraContent={this.operations}>
+                        <TabPane tab="对齐工具" key="1"></TabPane>
+                    </Tabs>
+                </div>
+                <div className="parent">
+                    <div>
+                        <label style={{margin:"10px"}}>选择任务</label>
+                        <Select value = {this.state.currentName} style={{ width: 300,margin:"10px" }} onChange = {this.selectTask.bind(this)}>
+                            {
+                                (()=>{
+                                    let array = [];
+                                    var names = this.state.projectNames;
+                                    for(var i = 0 ;i < names.length ;i++){
+                                        array.push(<Option key = {i} value={names[i]}>{names[i]}</Option>)
+                                    }
+                                    return array;
+                                })()
+                            }
+                        </Select>
+                    </div>
+
+                    <div>
+                        <Input placeholder = "新的中心词" className= "newCenterWord" onChange = {this.centerWordChange.bind(this)}/>
+                        <Button type="primary" style={{margin:"10px"}} onClick={this.getNewWordList.bind(this)}>增加</Button>
+                    </div>
+
+                    <div className="tableCenter">
+                        <MyTable data = {this.state.allData} dataChange = {this.tableDataChange.bind(this)}/>
+                    </div>
+                    <div className="sureBtn">
+                        <Button type="primary" style={{margin:"10px 0px 0px 280px"}} onClick={this.finaSubmit.bind(this)}>确认</Button>
+                    </div>
                 </div>
 
-                <div>
-                    <Input placeholder = "新的中心词" className= "newCenterWord" onChange = {this.centerWordChange.bind(this)}/>
-                    <Button type="primary" style={{margin:"10px"}} onClick={this.getNewWordList.bind(this)}>增加</Button>
-                </div>
-
-                <div className="tableCenter">
-                    <MyTable data = {this.state.allData} dataChange = {this.tableDataChange.bind(this)}/>
-                </div>
-                <Button type="primary" style={{margin:"10px 0px 0px 310px"}} onClick={this.finaSubmit.bind(this)}>确认</Button>
             </div>
 
         );
+    }
+
+    /**
+     *
+     */
+    exitLogin(){
+        Tools.reMoveStoryageItem('data');
+        this.props.history.replace('/login')
     }
 
     /**

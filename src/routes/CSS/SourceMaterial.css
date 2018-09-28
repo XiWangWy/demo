@@ -11,7 +11,8 @@
 }
 .tableCenter{
     margin: auto;
-    width: 400px;
+    width: 600px;
+    /*background-color: #40a9ff;*/
 }
 
 .centerLv{
@@ -22,4 +23,10 @@
 .equalLv{
     margin: 10px 0px 10px 50px;
     /*background-color: #40a9ff;*/
+}
+
+.sureBtn{
+    margin: auto;
+    width: 100px;
+    /*background-color: red;*/
 }

@@ -62,7 +62,10 @@ class Examine extends Component{
                     <MyTable data = {this.state.allData} dataChange = {this.tableDataChange.bind(this)}/>
                 </div>
 
-                <Button type="primary" style={{margin:"10px 0px 0px 310px"}} onClick={this.finaSubmit.bind(this)}>确认</Button>
+                <div className="sureBtn">
+                    <Button type="primary" style={{margin:"10px 0px 0px 280px"}} onClick={this.finaSubmit.bind(this)}>确认</Button>
+                </div>
+
             </div>
         );
     }
