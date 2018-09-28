@@ -7,6 +7,7 @@ import '../CSS/AlinLogin.css';
 // import SourceMaterial from './SourceMaterial'
 import Fetch from '../../Fetch.js'
 import { message,Form, Icon, Input, Button, Checkbox } from 'antd';
+import Tools from '../../Tools'
 const FormItem = Form.Item;
 
 class AlignLogin extends Component {
@@ -47,6 +48,18 @@ class AlignLogin extends Component {
             // console.log("支持localStoryage")
             var storage = window.localStorage;
             storage.setItem('data', data);
+        }
+    }
+
+    componentWillMount(){
+        if (Tools.getStoryageItem('data')){
+            var data = JSON.parse(Tools.getStoryageItem('data'));
+            var role = data['role'];
+            var route = role === "USER" ? "/source" : "/task"
+            this.props.history.replace({
+                pathname:route,
+                data:data
+            });
         }
     }
 
