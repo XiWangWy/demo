@@ -4,9 +4,8 @@
 import React from 'react';
 import { Component } from 'react';
 import '../CSS/MyTable.css';
-import Fetch from '../../Fetch.js'
-import {Checkbox,Select,Table,Radio} from 'antd';
-const Option = Select.Option
+import {Checkbox,Table,Radio} from 'antd';
+// const Option = Select.Option
 
 class MyTable extends Component {
 

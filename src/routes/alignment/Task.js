@@ -8,7 +8,7 @@ import '../CSS/Task.css';
 import Fetch from '../../Fetch.js'
 import TaskList from  './TaskList';
 import Contants from  '../../Constants'
-import {Modal,Input, Button, Checkbox,Select, } from 'antd';
+import {Modal,Input, Button,Select} from 'antd';
 const Option = Select.Option
 const confirm = Modal.confirm;
 

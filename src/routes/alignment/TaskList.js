@@ -3,8 +3,7 @@
  */
 import React from 'react';
 import { Component } from 'react';
-import Fetch from '../../Fetch.js'
-import {Input, Button, Checkbox,Select, Table} from 'antd';
+import {Table} from 'antd';
 import Tools from  '../../Tools'
 
 class TaskList extends Component {

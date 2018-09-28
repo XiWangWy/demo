@@ -6,7 +6,7 @@ import { Component } from 'react';
 import '../CSS/AlinLogin.css';
 // import SourceMaterial from './SourceMaterial'
 import Fetch from '../../Fetch.js'
-import { message,Form, Icon, Input, Button, Checkbox } from 'antd';
+import { message,Form, Icon, Input, Button } from 'antd';
 import Tools from '../../Tools'
 const FormItem = Form.Item;
 

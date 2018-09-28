@@ -6,7 +6,7 @@ import { Component } from 'react';
 import '../CSS/TaskDetail.css';
 import Fetch from '../../Fetch.js'
 import ListItem from './ListItem.js'
-import {message, Button, Checkbox,Select, List} from 'antd';
+import {message, Button,Select, List} from 'antd';
 import Tools from '../../Tools'
 const Option = Select.Option
 

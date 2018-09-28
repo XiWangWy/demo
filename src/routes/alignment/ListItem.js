@@ -5,9 +5,9 @@ import React from 'react';
 import { Component } from 'react';
 import '../CSS/ListItem.css';
 import Fetch from '../../Fetch.js'
-import {Upload,message, Button, Checkbox,Select, List} from 'antd';
+import {Upload,message, Button} from 'antd';
 import Tools from '../../Tools'
-const Option = Select.Option
+// const Option = Select.Option
 
 class  ListItem extends Component {
     constructor(props){

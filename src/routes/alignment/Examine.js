@@ -6,9 +6,9 @@ import { Component } from 'react';
 import '../CSS/SourceMaterial.css';
 import MyTable from  './MyTable'
 import Fetch from '../../Fetch.js'
-import { message, Input, Button, Checkbox,Select, } from 'antd';
+import { message, Input, Button} from 'antd';
 import Tools from '../../Tools'
-const Option = Select.Option
+// const Option = Select.Option
 
 class Examine extends Component{
 

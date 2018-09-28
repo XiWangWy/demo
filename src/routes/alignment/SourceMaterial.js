@@ -6,7 +6,7 @@ import { Component } from 'react';
 import '../CSS/SourceMaterial.css';
 import MyTable from  './MyTable'
 import Fetch from '../../Fetch.js'
-import { message, Input, Button, Checkbox,Select, } from 'antd';
+import { message, Input, Button,Select, } from 'antd';
 const Option = Select.Option
 
 class SourceMaterial extends Component {
