@@ -58,7 +58,7 @@ class SourceMaterial extends Component {
 
     render(){
         return(
-            <div>
+            <div className="parent">
                 <div>
                     <label style={{margin:"10px"}}>选择任务</label>
                     <Select value = {this.state.currentName} style={{ width: 300,margin:"10px" }} onChange = {this.selectTask.bind(this)}>
@@ -80,8 +80,10 @@ class SourceMaterial extends Component {
                     <Button type="primary" style={{margin:"10px"}} onClick={this.getNewWordList.bind(this)}>增加</Button>
                 </div>
 
-                <MyTable data = {this.state.allData} dataChange = {this.tableDataChange.bind(this)}/>
-                <Button type="primary" style={{margin:"10px 0px 0px 320px"}} onClick={this.finaSubmit.bind(this)}>确认</Button>
+                <div className="tableCenter">
+                    <MyTable data = {this.state.allData} dataChange = {this.tableDataChange.bind(this)}/>
+                </div>
+                <Button type="primary" style={{margin:"10px 0px 0px 310px"}} onClick={this.finaSubmit.bind(this)}>确认</Button>
             </div>
 
         );

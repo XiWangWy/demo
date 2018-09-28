@@ -69,17 +69,10 @@ class TaskDetail extends Component {
     }
 
     componentWillReceiveProps(props){
-        // this.setState(
-        //     {
-        //         item:props.item,
-        //         projectName: props.info['projectName']
-        //     }
-        // )
-        // console.log("diaoyong")
+
     }
 
     componentWillUpdata(){
-        console.log("diaoyong")
     }
 
 
@@ -93,10 +86,12 @@ class TaskDetail extends Component {
 
     render(){
        return(
-           <div>
+           <div className="parent">
                <div className="divStyle">
-                   {/*<label className="projectName" >项目名称：</label>*/}
                    <label className="projectNameValue">项目名称：{this.state.projectName}</label>
+               </div>
+
+               <div className="divStyle">
                    <Select className="selectMode"  value = {this.state.mode} onSelect={this.selectMod.bind(this)}>
                        {
                            (()=>{

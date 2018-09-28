@@ -1,27 +1,37 @@
 .divStyle{
-    margin-top: 10px;
+    margin: auto;
+    /*background-color: #40a9ff;*/
+    width: 630px;
 }
 
 .projectName{
-    margin: 10px 2px 10px 10px
+    width: 630px;
+    margin: 10px 2px 10px 10px;
+
 }
 
 .projectNameValue{
     width: 300px;
-    margin: 10px 2px 10px 10px;
-    /*background-color: aquamarine;*/
+    margin: auto;
 }
 .selectMode{
-    width: 150px;
-    margin: 10px 10px 10px 200px
+    width: 260px;
+    margin: 10px 10px 10px 0px
 }
 
 .selectDoc{
-    width: 150px;
+    width: 260px;
     margin: 10px 10px 10px 10px
 }
 
 .listDivStyle{
+    margin: auto;
+    width: 620px;
+    /*background-color: red;*/
+}
+
+.parent{
+    left: 0; right: 0;
     margin: 10px;
-    width: 600px;
+    text-align: center;
 }

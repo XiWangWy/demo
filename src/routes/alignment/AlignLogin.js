@@ -54,6 +54,9 @@ class AlignLogin extends Component {
         const { getFieldDecorator } = this.props.form;
         return (
             <div className="ParentApp">
+                {/*<div className="labelName">*/}
+                    {/*<label>对齐工具系统</label>*/}
+                {/*</div>*/}
             <Form onSubmit={this.handleSubmit} className="login-form">
                 <FormItem>
                     {getFieldDecorator('userName', {

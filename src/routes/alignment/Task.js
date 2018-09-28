@@ -51,7 +51,7 @@ class Task extends Component{
     render(){
         return(
 
-            <div>
+            <div className="parent">
                 {/*<div>*/}
                     {/*<Input placeholder = "项目名称" style={{ width:150,margin:"10px" }} onChange = {this.projectNameChange.bind(this)}></Input>*/}
                 {/*</div>*/}

@@ -47,10 +47,10 @@ class Examine extends Component{
 
     render(){
         return(
-            <div style={{margin:"20px 10px 10px 10px"}}>
+            <div className="parent">
                 <div>
-                    <label style={{margin:"20px 10px 10px 10px"}}>中心词精准率：{this.state.centralHit} / {this.state.centralHitSum}</label>
-                    <label style={{margin:"20px 10px 10px 10px"}}>中心词精准率：{this.state.synonymsCount} / {this.state.synonymsSum}</label>
+                    <label className="centerLv">中心词精准率：{this.state.centralHit} / {this.state.centralHitSum}</label>
+                    <label className="equalLv">同义词精准率：{this.state.synonymsCount} / {this.state.synonymsSum}</label>
                 </div>
 
                 <div>
@@ -58,8 +58,11 @@ class Examine extends Component{
                     <Button type="primary" style={{margin:"10px"}} onClick={this.getNewWordList.bind(this)}>增加</Button>
                 </div>
 
-                <MyTable data = {this.state.allData} dataChange = {this.tableDataChange.bind(this)}/>
-                <Button type="primary" style={{margin:"10px 0px 0px 320px"}} onClick={this.finaSubmit.bind(this)}>确认</Button>
+                <div className="tableCenter">
+                    <MyTable data = {this.state.allData} dataChange = {this.tableDataChange.bind(this)}/>
+                </div>
+
+                <Button type="primary" style={{margin:"10px 0px 0px 310px"}} onClick={this.finaSubmit.bind(this)}>确认</Button>
             </div>
         );
     }

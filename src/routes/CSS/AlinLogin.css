@@ -1,25 +1,37 @@
 .ParentApp {
-    /*margin:0;*/
-    /*padding:0;*/
-    /*height: 1000px;*/
-    /*position:relative;*/
-    /*bottom: 0px;*/
-    background-color: aquamarine;
-    /*display: table-cell;*/
-    /*vertical-align: middle;*/
-    /*text-align: center;*/
+    background-color: red;
+    top: 0; left: 0; bottom: 0; right: 0;
 }
 
 .login-form {
+    /*width: 300px;*/
+    /*height: 200px;*/
+
+    /*margin: auto;*/
+    /*!*position: absolute;*!*/
+
+    /*background-color: #40a9ff;*/
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -150px;
+    margin-left: -150px;
     width: 300px;
     height: 200px;
-    /*background-color: #52c41a;*/
-
-    margin: auto;
-    position: absolute;
-    top: 0; left: 0; bottom: 0; right: 0;
+    /*background: green;*/
 }
 
 .login-form-button {
     width: 100%;
+}
+.labelName{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    margin-top: -100px;
+    margin-left: -50px;
+    width: 200px;
+    font-size: larger;
+    /*background: green;*/
 }
